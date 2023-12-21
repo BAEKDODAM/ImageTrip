@@ -31,14 +31,16 @@ public class Member {
 
     //private String nickName;
 
-    //private String image;
+    @Column(nullable = true, updatable = true, unique = false)
+    private String image;
 
     //Schedule, Image, Like, MemberFile 연관관계 매핑 필요
 
-    public Member(String email, String name, String password){
+    public Member(String email, String name, String password, String image){
         this.email = email;
         this.name = name;
         this.password = password;
+        this.image = image;
     }
 
 }
