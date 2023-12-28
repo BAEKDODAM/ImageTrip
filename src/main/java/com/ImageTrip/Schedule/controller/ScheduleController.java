@@ -4,6 +4,8 @@ import com.ImageTrip.Response.MultiResponseDto;
 import com.ImageTrip.Response.PageInfo;
 import com.ImageTrip.Schedule.dto.ScheduleDto;
 import com.ImageTrip.Schedule.entity.Schedule;
+import com.ImageTrip.Schedule.mapper.ScheduleMapper;
+import com.ImageTrip.Schedule.service.ScheduleService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
@@ -22,11 +24,21 @@ import java.util.List;
 @RestController
 @RequestMapping("/schedule")
 public class ScheduleController {
+    private final ScheduleService scheduleService;
+    private final ScheduleMapper mapper;
+
+    public ScheduleController(ScheduleService scheduleService, ScheduleMapper mapper) {
+        this.scheduleService = scheduleService;
+        this.mapper = mapper;
+    }
+
     @PostMapping
     @ApiOperation(value = "일정 생성")
     public ResponseEntity postSchedule(@Valid @RequestBody ScheduleDto.Post requestBody,
                                        @RequestHeader(value = "Authorization") String token) throws Exception, IOException {
-        ScheduleDto.Response response = new ScheduleDto.Response();
+        Schedule postSchedule = mapper.schedulePostDtoToSchedule(requestBody);
+        long memberId = 1L;//jwtTokenizer.getUserId(token);
+        ScheduleDto.Response response = scheduleService.createSchedule(1L, postSchedule);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
