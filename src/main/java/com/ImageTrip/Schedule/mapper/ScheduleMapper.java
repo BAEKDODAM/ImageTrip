@@ -10,6 +10,5 @@ import java.util.List;
 public interface ScheduleMapper {
     ScheduleDto.Response scheduleToScheduleResponseDto(Schedule schedule);
     Schedule schedulePostDtoToSchedule(ScheduleDto.Post schedulePostDto);
-    Schedule schedulePatchDtoToSchedule(ScheduleDto.Patch patch);
     List<ScheduleDto.ListResponse> schedulesToScheduleResponseDtos(List<Schedule> schedules);
 }
