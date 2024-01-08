@@ -71,15 +71,6 @@ public class ScheduleController {
         long memberId = 1L;//jwtTokenizer.getUserId(token);
         List<ScheduleDto.ListResponse> mySchedules = scheduleService.findMyScheduleByPage(cursor, memberId, PageRequest.of(0, PAGE_DEFAULT_SIZE));
         return new ResponseEntity<>(mySchedules, HttpStatus.OK);
-        /*
-        Sort sort = Sort.by(Sort.Direction.DESC, "startDate"); // challengeId를 내림차순으로 정렬하는 Sort 객체 생성
-        Pageable pageable = PageRequest.of(pageablePageSize.getPageNumber(), pageablePageSize.getPageSize(), sort);
-        Page<Schedule> schedulePage = null; //= ScheduleService.getSchedulesPage(pageable);
-        List<ScheduleDto.ListResponse> response = null;// = ScheduleService.getSchedules(pageable);
-
-        return new ResponseEntity<>(new MultiResponseDto<>(response, schedulePage), HttpStatus.OK);
-
-         */
     }
 
     @ApiOperation(value = "모든 공유 일정 목록 조회")
@@ -87,14 +78,6 @@ public class ScheduleController {
     public ResponseEntity getAllSchedules(long cursor){
         List<ScheduleDto.ListResponse> allSchedules = scheduleService.findSharedSchedulesByPage(cursor, PageRequest.of(0, PAGE_DEFAULT_SIZE));
         return new ResponseEntity<>(allSchedules, HttpStatus.OK);
-        /*
-        Sort sort = Sort.by(Sort.Direction.DESC, "scheduleId"); // challengeId를 내림차순으로 정렬하는 Sort 객체 생성
-        Pageable pageable = PageRequest.of(pageablePageSize.getPageNumber(), pageablePageSize.getPageSize(), sort);
-        Page<Schedule> schedulePage = null; //= ScheduleService.getSchedulesPage(pageable);
-        List<ScheduleDto.ListResponse> response = null;// = ScheduleService.getSchedules(pageable);
-
-        return new ResponseEntity<>(new MultiResponseDto<>(response, schedulePage), HttpStatus.OK);
-         */
     }
 
     @ApiOperation(value = "일정 상세 페이지 조회")

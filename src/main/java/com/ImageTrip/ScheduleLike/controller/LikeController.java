@@ -39,8 +39,8 @@ public class LikeController {
                                            @RequestHeader(value = "Authorization") String token) {
         Sort sort = Sort.by(Sort.Direction.DESC, "startDate"); // challengeId를 내림차순으로 정렬하는 Sort 객체 생성
         Pageable pageable = PageRequest.of(pageablePageSize.getPageNumber(), pageablePageSize.getPageSize(), sort);
-        Page<Schedule> schedulePage = null; //= ScheduleService.getSchedulesPage(pageable);
-        List<ScheduleDto.ListResponse> response = null;// = ScheduleService.getSchedules(pageable);
+        Page<Schedule> schedulePage = null;
+        List<ScheduleDto.ListResponse> response = null;
 
         return new ResponseEntity<>(new MultiResponseDto<>(response, schedulePage), HttpStatus.OK);
 
