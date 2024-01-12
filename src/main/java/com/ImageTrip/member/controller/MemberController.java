@@ -2,6 +2,8 @@ package com.ImageTrip.member.controller;
 
 
 import com.ImageTrip.member.dto.*;
+import com.ImageTrip.member.entity.Member;
+import com.ImageTrip.member.service.MemberService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,13 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(value = "/user")
 public class MemberController {
+
+    private final MemberService memberService;
+
+    public MemberController(MemberService memberService){
+        this.memberService = memberService;
+
+    }
 
     @ApiOperation(value = "이메일 중복검사_회원가입")
     @PostMapping("/checkEmail")
@@ -46,8 +55,11 @@ public class MemberController {
 
     @ApiOperation(value = "회원가입")
     @PostMapping("/joinIn")
-    public ResponseEntity joinIn(@RequestBody @Valid CreateMemberDto createMemberDto) {
+    public ResponseEntity joinIn(@RequestBody @Valid CreateMemberDto createMemberDto) throws Exception{
         //email, name, pw, 유효성검증 필요
+        Member member = new Member(createMemberDto.getEmail(), createMemberDto.getName(), createMemberDto.getPassword());
+
+        memberService.createMember(member);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -76,8 +88,9 @@ public class MemberController {
     public ResponseEntity getAccount(@RequestHeader(value = "Authorization") String token){
 
         GetAccountResponseDto getAccountResponseDto = new GetAccountResponseDto();
+
         getAccountResponseDto.setEmail("exampleEmail");
-        getAccountResponseDto.setName("exampleName");
+        getAccountResponseDto.setName("exampleName_but_memberIdTest : " + memberService.getMemberIdFromToken(token));
         return new ResponseEntity(getAccountResponseDto, HttpStatus.OK);
     }
 
