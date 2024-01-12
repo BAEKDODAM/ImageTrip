@@ -9,12 +9,12 @@ import java.util.List;
 
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
-    List<Schedule> findByShareTrueOrderByIdDesc(Pageable pageable);
-    List<Schedule> findByShareTrueAndIdLessThanOrderByIdDesc(long id, Pageable pageable);
+    List<Schedule> findByShareTrueOrderByScheduleIdDesc(Pageable pageable);
+    List<Schedule> findByShareTrueAndScheduleIdLessThanOrderByScheduleIdDesc(long scheduleId, Pageable pageable);
 
-    List<Schedule> findByMemberMemberIdOrderByIdDesc(Long memberId, Pageable page);
-    List<Schedule> findByMemberMemberIdAndIdLessThanOrderByIdDesc(long memberId, long id, Pageable page);
+    List<Schedule> findByMemberMemberIdOrderByScheduleIdDesc(Long memberId, Pageable page);
+    List<Schedule> findByMemberMemberIdAndScheduleIdLessThanOrderByScheduleIdDesc(long memberId, long scheduleId, Pageable page);
 
-    List<Schedule> findByShardTrueAndSearchContainingOrderByIdDesc(String search, Pageable pageable);
-    List<Schedule> findByShareTrueAndSearchContainingAndIdLessThanOrderByIdDesc(String search, long id, Pageable pageable);
+    List<Schedule> findByShareTrueAndTitleContainingOrderByScheduleIdDesc(String search, Pageable pageable);
+    List<Schedule> findByShareTrueAndTitleContainingAndScheduleIdLessThanOrderByScheduleIdDesc(String search, long scheduleId, Pageable pageable);
 }

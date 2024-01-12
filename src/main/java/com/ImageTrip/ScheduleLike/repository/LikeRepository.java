@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface LikeRepository extends JpaRepository<ScheduleLike, Long> {
     List<ScheduleLike> findAllByScheduleScheduleId(long scheduleId);
-    List<ScheduleLike> findAllByImageImageId(long imageId);
+    //List<ScheduleLike> findAllByImageImageId(long imageId);
 
     void deleteAllByScheduleScheduleId(long ScheduleId);
 }
