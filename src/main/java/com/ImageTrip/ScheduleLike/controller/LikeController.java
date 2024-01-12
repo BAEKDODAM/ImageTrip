@@ -18,8 +18,8 @@ import java.util.List;
 @Controller
 @RequestMapping("/like")
 public class LikeController {
-    @PostMapping("/{scheduleId}")
     @ApiOperation(value = "좋아요")
+    @PostMapping("/{scheduleId}")
     public ResponseEntity postLike(@PathVariable("scheduleId") int scheduleId,
                                    @RequestHeader(value = "Authorization", required = false) String token) {
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -33,6 +33,7 @@ public class LikeController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @ApiOperation(value = "좋아요 한 일정 조회")
     @GetMapping()
     public ResponseEntity getLikeSchedules(final Pageable pageablePageSize,
                                            @RequestHeader(value = "Authorization") String token) {
