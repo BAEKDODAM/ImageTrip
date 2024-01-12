@@ -1,5 +1,7 @@
 package com.ImageTrip.member.entity;
 
+import com.ImageTrip.Schedule.entity.Schedule;
+import com.ImageTrip.ScheduleLike.entity.ScheduleLike;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,6 +10,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+
 import java.util.List;
 
 @Entity
@@ -38,6 +41,8 @@ public class Member {
     private String image = "example_image_link";
 
     //Schedule, Image, Like, MemberFile 연관관계 매핑 필요
+    @OneToMany(mappedBy = "member")
+    private List<Schedule> schedules;
 
 
     @ElementCollection(fetch = FetchType.EAGER)
