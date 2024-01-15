@@ -31,7 +31,7 @@ public class ScheduleService {
 
     public ScheduleDto.Response createSchedule(long memberId, Schedule postSchedule, List<ScheduleListDto.Post> scheduleLists) {
         //Member member = memberService.getMemberByMemberId(memberId)
-        Member member = new Member("email@email.com","name","password",null);
+        Member member = new Member("email@email.com","name","password");
         member.setMemberId(1L);
         postSchedule.setMember(member);
         Schedule saveSchedule = scheduleRepository.save(postSchedule);

@@ -4,6 +4,8 @@ package com.ImageTrip.member.service;
 import com.ImageTrip.auth.filter.JwtVerificationFilter;
 import com.ImageTrip.auth.jwt.JwtTokenizer;
 import com.ImageTrip.auth.utils.CustomAuthorityUtils;
+import com.ImageTrip.exception.BusinessLogicException;
+import com.ImageTrip.exception.ExceptionCode;
 import com.ImageTrip.member.entity.Member;
 import com.ImageTrip.member.repository.MemberRepository;
 import io.swagger.v3.oas.annotations.servers.Server;
@@ -46,8 +48,17 @@ public class MemberService {
         return ((Integer) claims.get("memberId")).longValue();
     }
 
+    public Member findMember(String token){
+        long memberId = getMemberIdFromToken(token);
+        Optional<Member> optionalMember = memberRepository.findById(memberId);
 
-    public void createMember(Member member) throws Exception{
+        Member findMember = optionalMember.orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+
+        return findMember;
+    }
+
+
+    public void createMember(Member member){
         //이메일 중복확인
         verifyExistsEmail(member.getEmail());
 
@@ -59,11 +70,66 @@ public class MemberService {
 
     }
 
-    public void verifyExistsEmail(String email) throws Exception{
-        Optional<Member> member = memberRepository.findByEmail(email);
-        if(member.isPresent()){
-            throw new Exception("Member Exists");
-        }
+    public void updateName(String token, String newName){
+        verifyExistsName(newName);
+
+        Member member = findMember(token);
+        member.setName(newName);
+
+        memberRepository.save(member);
+
+    }
+
+    public void updatePassword(String token, String currentPassword, String newPassword){
+
+        if(!currentPassword.equals(newPassword))
+            new BusinessLogicException(ExceptionCode.SAME_PASSWORD);
+
+        Member member = findMember(token);
+        member.setPassword(passwordEncoder.encode(newPassword));
+
+        memberRepository.save(member);
+    }
+
+    public boolean checkEmail(String email){
+        Optional<Member> optionalMember = memberRepository.findByEmail(email);
+
+        if(optionalMember.isPresent())
+            return false;
+
+        else
+            return true;
+    }
+
+    public boolean checkName(String name){
+        Optional<Member> optionalMember = memberRepository.findByName(name);
+
+        if(optionalMember.isPresent())
+            return false;
+
+        else
+            return true;
+    }
+
+    public void checkUserPassword(String token, String password) {
+        Member member = findMember(token);
+
+        if (!passwordEncoder.encode(password).equals(member.getPassword()));
+            new BusinessLogicException(ExceptionCode.UNMATCHED_PASSWORD);
+
+    }
+
+
+
+    public void verifyExistsEmail(String email) {
+        Optional<Member> optionalMember = memberRepository.findByEmail(email);
+        if(optionalMember.isPresent()) new BusinessLogicException(ExceptionCode.MEMBER_EXISTS);
+
+    }
+
+    public void verifyExistsName(String name) {
+        Optional<Member> optionalMember = memberRepository.findByEmail(name);
+        if(optionalMember.isPresent()) new BusinessLogicException(ExceptionCode.MEMBER_EXISTS);
 
     }
 
