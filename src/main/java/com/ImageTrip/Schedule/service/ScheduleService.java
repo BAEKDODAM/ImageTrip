@@ -10,6 +10,7 @@ import com.ImageTrip.ScheduleList.service.ScheduleListService;
 import com.ImageTrip.exception.BusinessLogicException;
 import com.ImageTrip.exception.ExceptionCode;
 import com.ImageTrip.member.entity.Member;
+import com.ImageTrip.member.service.MemberService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -22,17 +23,19 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final ScheduleListService scheduleListService;
     private final LikeService likeService;
+    private final MemberService memberService;
 
-    public ScheduleService(ScheduleRepository scheduleRepository, ScheduleListService scheduleListService, LikeService likeService) {
+    public ScheduleService(ScheduleRepository scheduleRepository, ScheduleListService scheduleListService, LikeService likeService, MemberService memberService) {
         this.scheduleRepository = scheduleRepository;
         this.scheduleListService = scheduleListService;
         this.likeService = likeService;
+        this.memberService = memberService;
     }
 
     public ScheduleDto.Response createSchedule(long memberId, Schedule postSchedule, List<ScheduleListDto.Post> scheduleLists) {
-        //Member member = memberService.getMemberByMemberId(memberId)
-        Member member = new Member("email@email.com","name","password");
-        member.setMemberId(1L);
+        //Member member = memberService.getMemberByMemberId(memberId);
+        Member member = new Member();
+
         postSchedule.setMember(member);
         Schedule saveSchedule = scheduleRepository.save(postSchedule);
         List<ScheduleList> SaveScheduleLists = scheduleListService.saveScheduleLists(scheduleLists, saveSchedule);
@@ -88,8 +91,8 @@ public class ScheduleService {
     // 페이징 처리를 위한 메서드
     public List<Schedule> getMySchedules(Long cursor, Pageable page, long memberId){
         return cursor.equals(0L)
-                ? scheduleRepository.findByMemberMemberIdOrderByIdDesc(memberId, page)
-                : scheduleRepository.findByMemberMemberIdAndIdLessThanOrderByIdDesc(memberId,cursor, page);
+                ? scheduleRepository.findByMemberMemberIdOrderByScheduleIdDesc(memberId, page)
+                : scheduleRepository.findByMemberMemberIdAndScheduleIdLessThanOrderByScheduleIdDesc(memberId,cursor, page);
     }
 
     public List<ScheduleDto.ListResponse> findSharedSchedulesByPage(long cursor, Pageable pageable){
@@ -103,8 +106,8 @@ public class ScheduleService {
 
     public List<Schedule> getSharedSchedules(Long cursor, Pageable pageable){
         return cursor.equals(0L)
-                ? scheduleRepository.findByShareTrueOrderByIdDesc(pageable)
-                : scheduleRepository.findByShareTrueAndIdLessThanOrderByIdDesc(cursor, pageable);
+                ? scheduleRepository.findByShareTrueOrderByScheduleIdDesc(pageable)
+                : scheduleRepository.findByShareTrueAndScheduleIdLessThanOrderByScheduleIdDesc(cursor, pageable);
     }
 
     public ScheduleDto.Response getScheduleDetail(long scheduleId) {
@@ -124,8 +127,8 @@ public class ScheduleService {
     }
     public List<Schedule> getSearchSchedule(Long cursor, Pageable pageable, String search) {
         return cursor.equals(0L)
-                ? scheduleRepository.findByShardTrueAndSearchContainingOrderByIdDesc(search, pageable)
-                : scheduleRepository.findByShareTrueAndSearchContainingAndIdLessThanOrderByIdDesc(search, cursor, pageable);
+                ? scheduleRepository.findByShareTrueAndTitleContainingOrderByScheduleIdDesc(search, pageable)
+                : scheduleRepository.findByShareTrueAndTitleContainingAndScheduleIdLessThanOrderByScheduleIdDesc(search, cursor, pageable);
     }
 
     public void validateWriter(long memberId, Schedule schedule) {
