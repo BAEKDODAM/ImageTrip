@@ -17,7 +17,7 @@ permissions:
   contents: read
 
 env:
-  S3_BUCKET_NAME: tourmatebucet
+  S3_BUCKET_NAME: tourmatebucket
 
 jobs:
   build:
@@ -31,6 +31,8 @@ jobs:
       with:
         java-version: '11'
         distribution: 'temurin'
+    - name: Add permission
+      run: chmod +x gradlew 
     - name: Build with Gradle
       uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
       with:
@@ -47,9 +49,17 @@ jobs:
       uses: aws-actions/configure-aws-credentials@v1
       with:
         aws-access-key-id: ${{ secrets.TOURMATE_ACCESS }} # 등록한 Github Secret이 자동으로 불려옵니다.
-        aws-secret-access-key: ${{ secrets.TOURMATE_SECRET }} # 등록한 Github Secret이 자동으로 불려옵니다.
+        aws-secret-access-key: ${{ secrets.TOURMATE_SECRETS }} # 등록한 Github Secret이 자동으로 불려옵니다.
         aws-region: ap-northeast-2
     
     # 압축한 프로젝트를 S3로 전송합니다.
     - name: Upload to S3
       run: aws s3 cp --region ap-northeast-2 ./practice-deploy.zip s3://$S3_BUCKET_NAME/practice-deploy.zip
+
+    # CodeDeploy에게 배포 명령을 내립니다.
+    - name: Code Deploy
+      run: >
+        aws deploy create-deployment --application-name tourmate
+        --deployment-config-name CodeDeployDefault.AllAtOnce
+        --deployment-group-name tourmate-group
+        --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=practice-deploy.zip
