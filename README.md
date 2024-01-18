@@ -6,6 +6,8 @@ Tour Mate는 여행 일정과 사진을 생성, 관리, 기록, 공유하기 위
 
 - **Development Duration**: `2023.12.10~2023.1.20`
 
+</br>
+
 ## 👪Team
 
 ### Frontend
@@ -17,6 +19,8 @@ Tour Mate는 여행 일정과 사진을 생성, 관리, 기록, 공유하기 위
 | 김리나                                             |백도담                                             |도희정                                             |  
 |:---------------------------------------------------:|:---------------------------------------------------:|:---------------------------------------------------:|
 | [@LinaKK](https://github.com/LinaKK)| [@BAEKDODAM](https://github.com/BAEKDODAM)| [@dev-learning1](https://github.com/dev-learning1) |
+
+</br>
 
 
 ## ✍Tech Stack
@@ -30,17 +34,27 @@ Tour Mate는 여행 일정과 사진을 생성, 관리, 기록, 공유하기 위
 ### WorkTool
 <img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white"> <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white"> <img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white"> <img src="https://img.shields.io/badge/Zoom-2D8CFF?style=for-the-badge&logo=zoom&logoColor=white"><img src="https://img.shields.io/badge/Discord-004C99?style=for-the-badge&logo=Discord&logoColor=white">
 
+</br>
+
 ## Docs
 **Team Page**: [Notion URL](https://www.notion.so/8b4a7f6ee94f484e80258962fa46e41b)
+
+</br>
 
 ### 화면정의서
 [Tourmate figma](https://www.figma.com/file/PCGlNKOdIgeRHEdlxunX2w/Untitled?type=design&mode=design&t=RoJ5AGkCDePwRaXs-1)
 
+</br>
+
 ### DB Schema
 <img src="img/db.png">
 
+</br>
+
 ### API 명세서
 [API 명세서](http://ec2-3-37-87-198.ap-northeast-2.compute.amazonaws.com:8080/swagger-ui/#/)
+
+</br>
 
 ### 배포
 <img src="img/배포.png">
