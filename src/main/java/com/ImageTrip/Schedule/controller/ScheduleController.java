@@ -8,6 +8,7 @@ import com.ImageTrip.Schedule.mapper.ScheduleMapper;
 import com.ImageTrip.Schedule.service.ScheduleService;
 import com.ImageTrip.ScheduleList.dto.ScheduleListDto;
 import com.ImageTrip.ScheduleList.entity.ScheduleList;
+import com.ImageTrip.member.service.MemberService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
@@ -23,10 +24,12 @@ import java.util.List;
 public class ScheduleController {
     private final ScheduleService scheduleService;
     private final ScheduleMapper mapper;
+    private final MemberService memberService;
     private static final int PAGE_DEFAULT_SIZE = 10;
 
-    public ScheduleController(ScheduleService scheduleService, ScheduleMapper mapper) {
+    public ScheduleController(ScheduleService scheduleService, ScheduleMapper mapper, MemberService memberService) {
         this.scheduleService = scheduleService;
+        this.memberService = memberService;
         this.mapper = mapper;
     }
 
@@ -36,7 +39,7 @@ public class ScheduleController {
                                        @RequestHeader(value = "Authorization") String token) throws Exception, IOException {
         requestBody.setScheduleList(null);
         Schedule postSchedule = mapper.schedulePostDtoToSchedule(requestBody);
-        long memberId = 1L;//jwtTokenizer.getUserId(token);
+        long memberId = memberService.getMemberIdFromToken(token);
         List<ScheduleListDto.Post> scheduleList = requestBody.getScheduleList();
         ScheduleDto.Response response = scheduleService.createSchedule(1L, postSchedule, scheduleList);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -48,7 +51,7 @@ public class ScheduleController {
                                         @RequestBody ScheduleDto.Post requestBody,
                                         @RequestHeader(value = "Authorization") String token) {
         requestBody.setScheduleList(null);
-        long memberId = 1L;//jwtTokenizer.getUserId(token);
+        long memberId = memberService.getMemberIdFromToken(token);
         Schedule schedule = mapper.schedulePostDtoToSchedule(requestBody);
         List<ScheduleListDto.Post> scheduleLists = requestBody.getScheduleList();
         ScheduleDto.Response response = scheduleService.updateSchedule(memberId, scheduleId, schedule, scheduleLists);
@@ -59,7 +62,7 @@ public class ScheduleController {
     @DeleteMapping("/{scheduleId}")
     public ResponseEntity deleteSchedule(@PathVariable("scheduleId") int scheduleId,
                                @RequestHeader(value = "Authorization") String token){
-        long memberId = 1L;//jwtTokenizer.getUserId(token);
+        long memberId = memberService.getMemberIdFromToken(token);
         scheduleService.deleteSchedule(memberId, scheduleId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -68,7 +71,7 @@ public class ScheduleController {
     @GetMapping("/my")
     public ResponseEntity getMySchedules(/*final Pageable pageablePageSize,*/ long cursor,
                                                @RequestHeader(value = "Authorization") String token){
-        long memberId = 1L;//jwtTokenizer.getUserId(token);
+        long memberId = memberService.getMemberIdFromToken(token);
         List<ScheduleDto.ListResponse> mySchedules = scheduleService.findMyScheduleByPage(cursor, memberId, PageRequest.of(0, PAGE_DEFAULT_SIZE));
         return new ResponseEntity<>(mySchedules, HttpStatus.OK);
     }
