@@ -14,9 +14,9 @@ public class LikeService {
     public int scheduleLikeCnt(long scheduleId){
         return (int) repository.findAllByScheduleScheduleId(scheduleId).stream().count();
     }
-    public int imageLikeCnt(long imageId){
+    /*public int imageLikeCnt(long imageId){
         return (int) repository.findAllByImageImageId(imageId).stream().count();
-    }
+    }*/
 
     public void createLike(){
 

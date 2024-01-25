@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 
 @AllArgsConstructor
@@ -19,6 +20,7 @@ public class CreateMemberDto {
     @NotBlank
     private String name;
 
-    @NotBlank
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[!@#$%^&*(),.?\\\":{}|<>])(.{8,})$",
+    message = "비밀번호는 영문, 특수문자 포함 8자리 이상이어야 합니다.")
     private String password;
 }
