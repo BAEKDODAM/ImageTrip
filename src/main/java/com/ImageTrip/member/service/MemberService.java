@@ -48,8 +48,16 @@ public class MemberService {
         return ((Integer) claims.get("memberId")).longValue();
     }
 
-    public Member findMember(String token){
+    public Member findMemberByToken(String token){
         long memberId = getMemberIdFromToken(token);
+        Optional<Member> optionalMember = memberRepository.findById(memberId);
+
+        Member findMember = optionalMember.orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+
+        return findMember;
+    }
+
+    public Member findMemberById(long memberId){
         Optional<Member> optionalMember = memberRepository.findById(memberId);
 
         Member findMember = optionalMember.orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
@@ -73,7 +81,7 @@ public class MemberService {
     public void updateName(String token, String newName){
         verifyExistsName(newName);
 
-        Member member = findMember(token);
+        Member member = findMemberByToken(token);
         member.setName(newName);
 
         memberRepository.save(member);
@@ -85,7 +93,7 @@ public class MemberService {
         if(!currentPassword.equals(newPassword))
             new BusinessLogicException(ExceptionCode.SAME_PASSWORD);
 
-        Member member = findMember(token);
+        Member member = findMemberByToken(token);
         member.setPassword(passwordEncoder.encode(newPassword));
 
         memberRepository.save(member);
@@ -112,7 +120,7 @@ public class MemberService {
     }
 
     public void checkUserPassword(String token, String password) {
-        Member member = findMember(token);
+        Member member = findMemberByToken(token);
 
         if (!passwordEncoder.encode(password).equals(member.getPassword()));
             new BusinessLogicException(ExceptionCode.UNMATCHED_PASSWORD);
