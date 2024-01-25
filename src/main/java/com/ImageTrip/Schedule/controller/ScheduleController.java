@@ -37,11 +37,11 @@ public class ScheduleController {
     @ApiOperation(value = "일정 생성")
     public ResponseEntity postSchedule(@Valid @RequestBody ScheduleDto.Post requestBody,
                                        @RequestHeader(value = "Authorization") String token) throws Exception, IOException {
-        requestBody.setScheduleList(null);
-        Schedule postSchedule = mapper.schedulePostDtoToSchedule(requestBody);
         long memberId = memberService.getMemberIdFromToken(token);
         List<ScheduleListDto.Post> scheduleList = requestBody.getScheduleList();
-        ScheduleDto.Response response = scheduleService.createSchedule(1L, postSchedule, scheduleList);
+        //requestBody.setScheduleList(null);
+        Schedule postSchedule = mapper.schedulePostDtoToSchedule(requestBody);
+        ScheduleDto.Response response = scheduleService.createSchedule(memberId, postSchedule, scheduleList);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
@@ -50,10 +50,12 @@ public class ScheduleController {
     public ResponseEntity patchSchedule(@PathVariable("scheduleId") int scheduleId,
                                         @RequestBody ScheduleDto.Post requestBody,
                                         @RequestHeader(value = "Authorization") String token) {
-        requestBody.setScheduleList(null);
+        if(requestBody.getShare() == null) System.out.println("share null "+requestBody.getShare());
+        List<ScheduleListDto.Post> scheduleLists = requestBody.getScheduleList();
+        //requestBody.setScheduleList(null);
         long memberId = memberService.getMemberIdFromToken(token);
         Schedule schedule = mapper.schedulePostDtoToSchedule(requestBody);
-        List<ScheduleListDto.Post> scheduleLists = requestBody.getScheduleList();
+        System.out.println(schedule.getShare());
         ScheduleDto.Response response = scheduleService.updateSchedule(memberId, scheduleId, schedule, scheduleLists);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -78,15 +80,25 @@ public class ScheduleController {
 
     @ApiOperation(value = "모든 공유 일정 목록 조회")
     @GetMapping
-    public ResponseEntity getAllSchedules(long cursor){
-        List<ScheduleDto.ListResponse> allSchedules = scheduleService.findSharedSchedulesByPage(cursor, PageRequest.of(0, PAGE_DEFAULT_SIZE));
+    public ResponseEntity getAllSchedules(long cursor,
+                                          @RequestHeader(value = "Authorization", required = false) String token){
+        long memberId = 0;
+        if(token != null){
+            memberId = memberService.getMemberIdFromToken(token);
+        }
+        List<ScheduleDto.ListResponse> allSchedules = scheduleService.findSharedSchedulesByPage(cursor, PageRequest.of(0, PAGE_DEFAULT_SIZE), memberId);
         return new ResponseEntity<>(allSchedules, HttpStatus.OK);
     }
 
     @ApiOperation(value = "일정 상세 페이지 조회")
     @GetMapping("/{scheduleId}")
-    public ResponseEntity getSchedule(@PathVariable("scheduleId") long scheduleId) {
-        ScheduleDto.Response response = scheduleService.getScheduleDetail(scheduleId);
+    public ResponseEntity getSchedule(@PathVariable("scheduleId") long scheduleId,
+                                      @RequestHeader(value = "Authorization", required = false) String token) {
+        long memberId = 0;
+        if(token != null){
+            memberId = memberService.getMemberIdFromToken(token);
+        }
+        ScheduleDto.Response response = scheduleService.getScheduleDetail(scheduleId, memberId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

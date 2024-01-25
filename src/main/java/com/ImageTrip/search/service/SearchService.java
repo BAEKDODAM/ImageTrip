@@ -16,7 +16,7 @@ public class SearchService {
         this.scheduleService = scheduleService;
     }
 
-    public List<ScheduleDto.ListResponse> findSearch(String search, long cursor, Pageable pageable) {
-        return scheduleService.findSearchSchedule(cursor, pageable, search);
+    public List<ScheduleDto.ListResponse> findSearch(String search, long cursor, Pageable pageable, long memberId) {
+        return scheduleService.findSearchSchedule(cursor, pageable, search, memberId);
     }
 }
