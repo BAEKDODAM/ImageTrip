@@ -22,7 +22,6 @@ public class ScheduleListService {
     }
 
     public List<ScheduleList> saveScheduleLists(List<ScheduleListDto.Post> schedules, Schedule schedule) {
-        log.info("save schedule lists "+String.valueOf(schedules.size()));
         return schedules.stream().map(scheduleList -> {
             ScheduleList scheduleList1 = new ScheduleList();
             scheduleList1.setContent(scheduleList.getContent());

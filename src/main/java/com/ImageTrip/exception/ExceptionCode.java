@@ -8,6 +8,9 @@ public enum ExceptionCode {
     MEMBER_EXISTS(409, "Member exists"),
     LOGOUT(401, "Logout"),
     NO_COOKIE(403, "No Cookie"),
+    UNMATCHED_PASSWORD(403, "비밀번호가 잘못되었습니다"),
+
+    SAME_PASSWORD(409, "현재 비밀번호와 동일한 비밀번호 입니다."),
     INVALID_REFRESH_TOKEN_STATE(403, "Invalid Refresh Token State"),
     INVALID_ACCESS_TOKEN_STATE(403, "Invalid Access Token State"),
     ACCESS_TOKEN_EXPIRED(401, "Access Token Expired"),

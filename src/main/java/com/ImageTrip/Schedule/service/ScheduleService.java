@@ -28,24 +28,17 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final ScheduleListService scheduleListService;
     private final LikeService likeService;
-    private final MemberService memberService;
-    private final MemberRepository memberRepository;
 
-    public ScheduleService(ScheduleRepository scheduleRepository, ScheduleListService scheduleListService, LikeService likeService, MemberService memberService, MemberRepository memberRepository) {
+    public ScheduleService(ScheduleRepository scheduleRepository, ScheduleListService scheduleListService, LikeService likeService) {
         this.scheduleRepository = scheduleRepository;
         this.scheduleListService = scheduleListService;
         this.likeService = likeService;
-        this.memberService = memberService;
-        this.memberRepository = memberRepository;
     }
 
-    public ScheduleDto.Response createSchedule(long memberId, Schedule postSchedule, List<ScheduleListDto.Post> scheduleLists) {
+    public ScheduleDto.Response createSchedule(Schedule postSchedule, List<ScheduleListDto.Post> scheduleLists, Member member) {
         //Member member = memberService.getMemberByMemberId(memberId);
-        Member member = memberRepository.findById(memberId).orElseThrow(() ->
-                new BusinessLogicException(ExceptionCode.UNMATCHED_WRITER));
         postSchedule.setMember(member);
         Schedule saveSchedule = scheduleRepository.save(postSchedule);
-        log.info(String.valueOf(memberId)+", "+String.valueOf(postSchedule)+", "+String.valueOf(scheduleLists));
         List<ScheduleList> SaveScheduleLists = scheduleListService.saveScheduleLists(scheduleLists, saveSchedule);
         Schedule findSchedule = findVerifiedSchedule(saveSchedule.getScheduleId());
         ScheduleDto.Response response = ScheduleDto.Response.from(findSchedule, member, SaveScheduleLists, 0);
@@ -55,8 +48,7 @@ public class ScheduleService {
 
     public ScheduleDto.Response updateSchedule(long memberId, long scheduleId, Schedule postSchedule, List<ScheduleListDto.Post> scheduleLists) {
         //Member member = memberService.getMemberByMemberId(memberId)
-        Member member = memberRepository.findById(memberId).orElseThrow(() ->
-                new BusinessLogicException(ExceptionCode.UNMATCHED_WRITER));
+
         Schedule findSchedule = findVerifiedSchedule(scheduleId);
         validateWriter(memberId, findSchedule);
 
@@ -93,16 +85,14 @@ public class ScheduleService {
         scheduleRepository.deleteById(scheduleId);
     }
 
-    public List<ScheduleDto.ListResponse> findMyScheduleByPage(long cursor, long memberId, Pageable pageable){
+    public List<ScheduleDto.ListResponse> findMyScheduleByPage(long cursor, Member member, Pageable pageable){
         //Member member = memberService.getMemberByMemberId(memberId)
-        Member member = memberRepository.findById(memberId).orElseThrow(() ->
-                new BusinessLogicException(ExceptionCode.UNMATCHED_WRITER));
-        List<Schedule> schedules = getMySchedules(cursor, pageable, memberId)
+        List<Schedule> schedules = getMySchedules(cursor, pageable, member.getMemberId())
                 .stream().collect(Collectors.toList());
 
         return schedules.stream().map(schedule -> {
             int likeCnt = likeService.scheduleLikeCnt(schedule.getScheduleId());
-            boolean liked = likeService.findLike(schedule.getScheduleId(), memberId);
+            boolean liked = likeService.findLike(schedule.getScheduleId(), member.getMemberId());
             return ScheduleDto.ListResponse.from(schedule, member, likeCnt, liked);
         }).collect(Collectors.toList());
     }

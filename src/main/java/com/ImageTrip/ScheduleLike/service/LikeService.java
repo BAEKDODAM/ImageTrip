@@ -16,25 +16,21 @@ import org.springframework.transaction.annotation.Transactional;
 public class LikeService {
     private final LikeRepository repository;
     private final MemberService memberService;
-    private final MemberRepository memberRepository;
 
-    public LikeService(LikeRepository repository, MemberService memberService, MemberRepository memberRepository) {
+
+    public LikeService(LikeRepository repository, MemberService memberService) {
         this.repository = repository;
         this.memberService = memberService;
-        this.memberRepository = memberRepository;
     }
 
     public int scheduleLikeCnt(long scheduleId){
         return (int) repository.findAllByScheduleScheduleId(scheduleId).stream().count();
     }
 
-    public void createLike(Schedule schedule, long memberId){
-        if(findLike(schedule.getScheduleId(), memberId)) {
+    public void createLike(Schedule schedule, Member member){
+        if(findLike(schedule.getScheduleId(), member.getMemberId())) {
             throw new BusinessLogicException(ExceptionCode.ALREADY_LIKED);
         }
-        //Schedule schedule = scheduleService.findVerifiedSchedule(scheduleId);
-        Member member = memberRepository.findById(memberId).orElseThrow(() ->
-                new BusinessLogicException(ExceptionCode.UNMATCHED_WRITER));
 
         ScheduleLike like = new ScheduleLike();
         like.setSchedule(schedule);
@@ -50,7 +46,6 @@ public class LikeService {
     public void deleteAllLikeByScheduleId(long scheduleId){
         repository.deleteAllByScheduleScheduleId(scheduleId);
     }
-    public void deleteLikeByImageId(long imageId){}
 
     public boolean findLike(long scheduleId, long memberId){
         return repository.findByScheduleScheduleIdAndMemberMemberId(scheduleId, memberId).isPresent();

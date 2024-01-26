@@ -6,6 +6,7 @@ import com.ImageTrip.Schedule.entity.Schedule;
 import com.ImageTrip.Schedule.service.ScheduleService;
 import com.ImageTrip.ScheduleLike.repository.LikeRepository;
 import com.ImageTrip.ScheduleLike.service.LikeService;
+import com.ImageTrip.member.entity.Member;
 import com.ImageTrip.member.service.MemberService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.Page;
@@ -38,9 +39,9 @@ public class LikeController {
     @PostMapping("/{scheduleId}")
     public ResponseEntity postLike(@PathVariable("scheduleId") int scheduleId,
                                    @RequestHeader(value = "Authorization", required = false) String token) {
-        long memberId = memberService.getMemberIdFromToken(token);
+        Member member = memberService.findMemberByToken(token);
         Schedule schedule = scheduleService.findVerifiedSchedule(scheduleId);
-        likeService.createLike(schedule, memberId);
+        likeService.createLike(schedule, member);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

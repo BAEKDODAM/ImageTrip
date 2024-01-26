@@ -8,6 +8,7 @@ import com.ImageTrip.Schedule.mapper.ScheduleMapper;
 import com.ImageTrip.Schedule.service.ScheduleService;
 import com.ImageTrip.ScheduleList.dto.ScheduleListDto;
 import com.ImageTrip.ScheduleList.entity.ScheduleList;
+import com.ImageTrip.member.entity.Member;
 import com.ImageTrip.member.service.MemberService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.*;
@@ -37,11 +38,10 @@ public class ScheduleController {
     @ApiOperation(value = "일정 생성")
     public ResponseEntity postSchedule(@Valid @RequestBody ScheduleDto.Post requestBody,
                                        @RequestHeader(value = "Authorization") String token) throws Exception, IOException {
-        long memberId = memberService.getMemberIdFromToken(token);
+        Member member = memberService.findMemberByToken(token);
         List<ScheduleListDto.Post> scheduleList = requestBody.getScheduleList();
-        //requestBody.setScheduleList(null);
         Schedule postSchedule = mapper.schedulePostDtoToSchedule(requestBody);
-        ScheduleDto.Response response = scheduleService.createSchedule(memberId, postSchedule, scheduleList);
+        ScheduleDto.Response response = scheduleService.createSchedule(postSchedule, scheduleList, member);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
@@ -50,12 +50,9 @@ public class ScheduleController {
     public ResponseEntity patchSchedule(@PathVariable("scheduleId") int scheduleId,
                                         @RequestBody ScheduleDto.Post requestBody,
                                         @RequestHeader(value = "Authorization") String token) {
-        if(requestBody.getShare() == null) System.out.println("share null "+requestBody.getShare());
         List<ScheduleListDto.Post> scheduleLists = requestBody.getScheduleList();
-        //requestBody.setScheduleList(null);
         long memberId = memberService.getMemberIdFromToken(token);
         Schedule schedule = mapper.schedulePostDtoToSchedule(requestBody);
-        System.out.println(schedule.getShare());
         ScheduleDto.Response response = scheduleService.updateSchedule(memberId, scheduleId, schedule, scheduleLists);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -73,8 +70,8 @@ public class ScheduleController {
     @GetMapping("/my")
     public ResponseEntity getMySchedules(/*final Pageable pageablePageSize,*/ long cursor,
                                                @RequestHeader(value = "Authorization") String token){
-        long memberId = memberService.getMemberIdFromToken(token);
-        List<ScheduleDto.ListResponse> mySchedules = scheduleService.findMyScheduleByPage(cursor, memberId, PageRequest.of(0, PAGE_DEFAULT_SIZE));
+        Member member = memberService.findMemberByToken(token);
+        List<ScheduleDto.ListResponse> mySchedules = scheduleService.findMyScheduleByPage(cursor, member, PageRequest.of(0, PAGE_DEFAULT_SIZE));
         return new ResponseEntity<>(mySchedules, HttpStatus.OK);
     }
 
