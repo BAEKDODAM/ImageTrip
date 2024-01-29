@@ -23,7 +23,7 @@ public class Image {
     @Column(nullable = false)
     private String uri; //S3에 저장된 파일 URL
     @Column(columnDefinition="bit(1) default 0")
-    private boolean isShared;
+    private boolean Shared;
     @ManyToOne
     @JoinColumn(name = "memberId")
     private Member member;
@@ -45,9 +45,9 @@ public class Image {
     private String tag;
 
     @Builder
-    public Image(String uri, boolean isShared, Member member, LocalDateTime createdDate, LocalDateTime updatedDate, String name, float lat, float lon, String addr, long fileSize, String tag) {
+    public Image(String uri, boolean Shared, Member member, LocalDateTime createdDate, LocalDateTime updatedDate, String name, float lat, float lon, String addr, long fileSize, String tag) {
         this.uri = uri;
-        this.isShared = isShared;
+        this.Shared = Shared;
         this.member = member;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
@@ -58,15 +58,4 @@ public class Image {
         this.fileSize = fileSize;
         this.tag = tag;
     }
-
-//    public void update(String uri, boolean isShared, LocalDateTime updatedDate, String name, float lat, float lon, long fileSize, String tag) {
-//        this.uri = uri;
-//        this.isShared = isShared;
-//        this.updatedDate = updatedDate;
-//        this.name = name;
-//        this.lat = lat;
-//        this.lon = lon;
-//        this.fileSize = fileSize;
-//        this.tag = tag;
-//    }
 }
