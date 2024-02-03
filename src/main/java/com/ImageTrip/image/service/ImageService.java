@@ -164,14 +164,6 @@ public class ImageService {
         imageRepository.deleteById(imageId);
     }
 
-//    public List<Image> findAllByShared(boolean shared){
-//        return imageRepository.findAllByShared(shared);
-//    }
-
-//    public List<Image> findAllByMember(Member member){
-//        //Member member = memberService.getMemberByMemberId(memberId)
-//        return imageRepository.findAllByMemberId(member.getMemberId());
-//    }
 
     // 검색
     public List<Image> findAllBySearchAndMember(String searchTerm, Member member){

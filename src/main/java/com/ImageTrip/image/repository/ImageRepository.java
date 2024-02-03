@@ -11,9 +11,6 @@ import java.util.List;
 
 @Repository
 public interface ImageRepository extends JpaRepository<Image, Long> {
-    Image findByImageId(long imageId);
-    List<Image> findAllByShared(boolean shared);
-    List<Image> findAllByMemberId(long memberId);
 
     // 태그 또는 사용자이름이 주어진 문자열을 포함하는 이미지를 검색
     @Query("SELECT i FROM Image i WHERE (:searchTerm IS NULL OR :searchTerm = '' OR i.tag LIKE %:searchTerm% OR i.member.name LIKE %:searchTerm%) AND i.member.memberId = :memberId")
