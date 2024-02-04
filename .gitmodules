@@ -1,0 +1,3 @@
+[submodule "tourmate-data"]
+	path = tourmate-data
+	url = https://github.com/BAEKDODAM/tourmate-data

@@ -24,6 +24,7 @@ public class Image {
     private String uri; //S3에 저장된 파일 URL
     @Column(columnDefinition="bit(1) default 0")
     private boolean isShared;
+
     @ManyToOne
     @JoinColumn(name = "memberId")
     private Member member;
@@ -48,6 +49,7 @@ public class Image {
     public Image(String uri, boolean isShared, Member member, LocalDateTime createdDate, LocalDateTime updatedDate, String name, float lat, float lon, String addr, long fileSize, String tag) {
         this.uri = uri;
         this.isShared = isShared;
+
         this.member = member;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;

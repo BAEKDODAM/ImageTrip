@@ -18,8 +18,10 @@ public class ImageDTO {
 
     @Getter
     public static class Upload {
+
         private List<MultipartFile> files;
         private boolean isShared;
+
         private String tag;
     }
 
@@ -31,4 +33,5 @@ public class ImageDTO {
 //        private float lat;
 //        private float lon;
 //    }
+
 }
