@@ -11,17 +11,16 @@ import java.util.List;
 
 @Repository
 public interface ImageRepository extends JpaRepository<Image, Long> {
+//    List<Image> findByTag(String tag);
 
     // 태그 또는 사용자이름이 주어진 문자열을 포함하는 이미지를 검색
-    @Query("SELECT i FROM Image i WHERE (:searchTerm IS NULL OR :searchTerm = '' OR i.tag LIKE %:searchTerm% OR i.member.name LIKE %:searchTerm%) AND i.member.memberId = :memberId")
-    List<Image> findAllBySearchAndMemberId(@Param("searchTerm") String searchTerm, @Param("memberId") long memberId);
+    @Query("SELECT i FROM Image i WHERE i.tag LIKE %:searchTerm% OR i.member.name LIKE %:searchTerm%")
+    List<Image> findByTagOrMemberUsername(@Param("searchTerm") String searchTerm);
 
-    @Query("SELECT i FROM Image i WHERE (:searchTerm IS NULL OR :searchTerm = '' OR i.tag LIKE %:searchTerm% OR i.member.name LIKE %:searchTerm%) AND i.Shared = :Shared")
-    List<Image> findAllBySearchAndShared(@Param("searchTerm") String searchTerm, @Param("Shared") boolean Shared);
-
+    List<Image> findByIsShared(boolean isShared);
 
     @Modifying
-    @Query("UPDATE Image i SET i.tag = :tag, i.Shared = :isShared WHERE i.imageId = :imageId")
-    int updateImageTagAndShared(@Param("imageId") Long imageId, @Param("tag") String tag, @Param("isShared") boolean isShared);
+    @Query("UPDATE Image i SET i.tag = :tag, i.isShared = :isShared WHERE i.imageId = :imageId")
+    int updateImageTagAndIsShared(@Param("imageId") Long imageId, @Param("tag") String tag, @Param("isShared") boolean isShared);
 
 }

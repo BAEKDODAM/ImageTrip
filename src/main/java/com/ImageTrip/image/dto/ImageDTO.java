@@ -18,17 +18,20 @@ public class ImageDTO {
 
     @Getter
     public static class Upload {
+
+        private List<MultipartFile> files;
+        private boolean isShared;
+
+        private String tag;
+    }
+
+
+
+//    @Getter
+//    public static class Update{
 //        private List<MultipartFile> files;
-        private MultipartFile file;
-        private boolean Shared;
-        private String tag;
-    }
+//        private float lat;
+//        private float lon;
+//    }
 
-
-
-    @Getter
-    public static class Update{
-        private boolean Shared;
-        private String tag;
-    }
 }
