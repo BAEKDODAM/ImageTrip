@@ -58,6 +58,7 @@ dependencies {
 
 	// rds 연결
 	implementation 'mysql:mysql-connector-java:8.0.33'
+	//runtimeOnly 'com.mysql:mysql-connector-j'
 }
 
 tasks.named('test') {
