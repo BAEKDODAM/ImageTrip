@@ -8,7 +8,6 @@ public enum ExceptionCode {
     MEMBER_EXISTS(409, "Member exists"),
     LOGOUT(401, "Logout"),
     NO_COOKIE(403, "No Cookie"),
-
     UNMATCHED_PASSWORD(403, "비밀번호가 잘못되었습니다"),
 
     SAME_PASSWORD(409, "현재 비밀번호와 동일한 비밀번호 입니다."),
@@ -17,9 +16,9 @@ public enum ExceptionCode {
     ACCESS_TOKEN_EXPIRED(401, "Access Token Expired"),
     REFRESH_TOKEN_EXPIRED(401, "Refresh Token Expired"),
     UNMATCHED_WRITER(403, "글을 작성한 회원이 아닙니다."),
-
-    SCHEDULE_NOT_FOUND(404, "존재하지 않는 일정입니다.");
-
+    SCHEDULE_NOT_FOUND(404, "존재하지 않는 일정입니다."),
+    ALREADY_LIKED(409, "이미 좋아요 한 게시물입니다."),
+    LIKE_NOT_FOUND(404, "좋아요 한 게시물이 아닙니다.");
 
     @Getter
     private int status;

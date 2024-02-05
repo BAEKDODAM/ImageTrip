@@ -1,6 +1,7 @@
 package com.ImageTrip.ScheduleList.entity;
 
 import com.ImageTrip.Schedule.entity.Schedule;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,6 +22,7 @@ public class ScheduleList {
     private int priority;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "scheduleId")
     private Schedule schedule;
 }

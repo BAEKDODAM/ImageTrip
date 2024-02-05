@@ -1,6 +1,8 @@
 package com.ImageTrip.ScheduleLike.entity;
 
 import com.ImageTrip.Schedule.entity.Schedule;
+import com.ImageTrip.member.entity.Member;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -16,10 +18,11 @@ public class ScheduleLike {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long scheduleLikeId;
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "scheduleId")
     private Schedule schedule;
 
-    private long imageId;
-    private long memberId;
-
+    @ManyToOne
+    @JoinColumn(name = "memberId")
+    private Member member;
 }
