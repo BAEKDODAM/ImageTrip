@@ -41,6 +41,16 @@ dependencies {
 	// swagger
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
 	implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+
+	// metadata-extractor
+	implementation 'com.drewnoakes:metadata-extractor:2.16.0'
+
+	// json
+	implementation 'org.json:json:20220320' // 여기에 사용할 버전을 명시합니다
+
+	//mapper
+	implementation 'org.mapstruct:mapstruct:1.4.2.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
 }
 
 tasks.named('test') {
