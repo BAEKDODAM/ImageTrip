@@ -2,6 +2,8 @@ package com.ImageTrip.Schedule.entity;
 
 import com.ImageTrip.ScheduleLike.entity.ScheduleLike;
 import com.ImageTrip.ScheduleList.entity.ScheduleList;
+import com.ImageTrip.member.entity.Member;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -26,20 +28,25 @@ public class Schedule {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
-    private boolean share;
+    private Boolean share;
     @CreatedDate
     @Column(updatable = false)
-    public LocalDateTime createdDate;
+    private LocalDateTime createdDate;
     @LastModifiedDate
-    public LocalDateTime updatedDate;
+    private LocalDateTime updatedDate;
 
-    public LocalDate startDate;
-    public LocalDate endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
 
     @OneToMany(mappedBy = "schedule")
+    @JsonManagedReference
     private List<ScheduleList> scheduleLists;
 
     @OneToMany(mappedBy = "schedule")
+    @JsonManagedReference
     private List<ScheduleLike> scheduleLikes;
+
+    @ManyToOne
+    @JoinColumn(name = "memberId")
+    private Member member;
 }

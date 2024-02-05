@@ -24,7 +24,7 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-	//implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-web-services'
@@ -35,7 +35,6 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
-	//implementation 'com.h2database:h2'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
 	// swagger
@@ -46,7 +45,12 @@ dependencies {
 	implementation 'com.drewnoakes:metadata-extractor:2.16.0'
 
 	// json
-	implementation 'org.json:json:20220320' // 여기에 사용할 버전을 명시합니다
+	implementation 'org.json:json:20220320'
+
+	//jwt
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	runtimeOnly	'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
 	//mapper
 	implementation 'org.mapstruct:mapstruct:1.4.2.Final'
