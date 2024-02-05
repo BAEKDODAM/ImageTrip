@@ -12,29 +12,31 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter
 @NoArgsConstructor
 public class ScheduleDto {
     @Getter
+    @Setter
     public static class Post {
-        @NotBlank
         private String title;
 
         @Setter
+        @Getter
         private List<ScheduleListDto.Post> scheduleList;
 
         private LocalDate startDate;
 
         private LocalDate endDate;
 
-        private boolean share;
+        private Boolean share;
     }
 
     @Setter
+    @Getter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Response {
+        private long scheduleId;
         @ApiModelProperty(example = "일정 이름")
         private String title;
 
@@ -48,65 +50,77 @@ public class ScheduleDto {
 
         private List<ScheduleList> scheduleLists;
         private boolean share;
+        private boolean liked;
 
-        public static Response from(Schedule schedule, int likeCnt){
+        public static Response from(Schedule schedule, int likeCnt, boolean liked){
             return Response.builder()
+                    .scheduleId(schedule.getScheduleId())
                     .title(schedule.getTitle())
                     .scheduleLists(schedule.getScheduleLists())
                     .startDate(schedule.getStartDate())
                     .endDate(schedule.getEndDate())
                     .likeCnt(likeCnt)
+                    .liked(liked)
                     .name(schedule.getMember().getName())
-                    .share(schedule.isShare())
+                    .share(schedule.getShare())
                     .build();
         }
 
         public static Response from(Schedule schedule, Member member, List<ScheduleList> scheduleLists, int likeCnt) {
             return Response.builder()
+                    .scheduleId(schedule.getScheduleId())
                     .title(schedule.getTitle())
                     .scheduleLists(schedule.getScheduleLists())
                     .startDate(schedule.getStartDate())
                     .endDate(schedule.getEndDate())
                     .likeCnt(likeCnt)
                     .name(member.getName())
-                    .share(schedule.isShare())
+                    .share(schedule.getShare())
                     .build();
         }
     }
 
     @Builder
     @Setter
+    @Getter
     @AllArgsConstructor
     @NoArgsConstructor
     public static class ListResponse {
-        public String title;
+        private long scheduleId;
 
-        public LocalDate startDate;
+        private String title;
 
-        public LocalDate endDate;
+        private LocalDate startDate;
 
-        public int likeCnt;
+        private LocalDate endDate;
 
-        public String name;
+        private int likeCnt;
+
+        private String name;
+        private boolean liked;
 
         public ListResponse(Schedule schedule) {
         }
-        public static ListResponse from (Schedule schedule, int likeCnt){
+        public static ListResponse from (Schedule schedule, int likeCnt, boolean liked){
             return ListResponse.builder()
+                    .scheduleId(schedule.getScheduleId())
                     .title(schedule.getTitle())
                     .startDate(schedule.getStartDate())
                     .endDate(schedule.getEndDate())
                     .likeCnt(likeCnt)
+                    .liked(liked)
                     .name(schedule.getMember().getName())
                     .build();
         }
 
-        public static ListResponse from (Schedule schedule, Member member, int likeCnt){
+        public static ListResponse from (Schedule schedule, Member member, int likeCnt, boolean liked){
             return ListResponse.builder()
+                    .scheduleId(schedule.getScheduleId())
                     .title(schedule.getTitle())
                     .startDate(schedule.getStartDate())
                     .endDate(schedule.getEndDate())
                     .likeCnt(likeCnt)
+                    .liked(liked)
                     .name(member.getName())
                     .build();
         }

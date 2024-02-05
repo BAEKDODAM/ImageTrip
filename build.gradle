@@ -35,12 +35,17 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
-	implementation 'com.h2database:h2'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
 	// swagger
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
 	implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+
+	// metadata-extractor
+	implementation 'com.drewnoakes:metadata-extractor:2.16.0'
+
+	// json
+	implementation 'org.json:json:20220320'
 
 	//jwt
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
@@ -48,11 +53,25 @@ dependencies {
 	runtimeOnly	'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
 	//mapper
-
 	implementation 'org.mapstruct:mapstruct:1.4.2.Final'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
+
+	//Gson
+	implementation 'com.google.code.gson:gson'
+
+	// rds 연결
+	implementation 'mysql:mysql-connector-java:8.0.33'
+	//runtimeOnly 'com.mysql:mysql-connector-j'
+
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+task copyPrivate(type: Copy) {
+	copy {
+		from './tourmate-data'
+		include "*.yml"
+		into 'src/main/resources'
+	}
 }

@@ -38,6 +38,7 @@ public class MemberService {
         this.jwtTokenizer = jwtTokenizer;
     }
 
+
     public long getMemberIdFromToken(String token) {
         String jws = token.replace("Bearer ", "");
         String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
@@ -48,16 +49,9 @@ public class MemberService {
         return ((Integer) claims.get("memberId")).longValue();
     }
 
+
     public Member findMemberByToken(String token){
         long memberId = getMemberIdFromToken(token);
-        Optional<Member> optionalMember = memberRepository.findById(memberId);
-
-        Member findMember = optionalMember.orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
-
-        return findMember;
-    }
-
-    public Member findMemberById(long memberId){
         Optional<Member> optionalMember = memberRepository.findById(memberId);
 
         Member findMember = optionalMember.orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
@@ -78,6 +72,7 @@ public class MemberService {
 
     }
 
+
     public void updateName(String token, String newName){
         verifyExistsName(newName);
 
@@ -87,6 +82,7 @@ public class MemberService {
         memberRepository.save(member);
 
     }
+
 
     public void updatePassword(String token, String currentPassword, String newPassword){
 
@@ -99,25 +95,6 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    public boolean checkEmail(String email){
-        Optional<Member> optionalMember = memberRepository.findByEmail(email);
-
-        if(optionalMember.isPresent())
-            return false;
-
-        else
-            return true;
-    }
-
-    public boolean checkName(String name){
-        Optional<Member> optionalMember = memberRepository.findByName(name);
-
-        if(optionalMember.isPresent())
-            return false;
-
-        else
-            return true;
-    }
 
     public void checkUserPassword(String token, String password) {
         Member member = findMemberByToken(token);
