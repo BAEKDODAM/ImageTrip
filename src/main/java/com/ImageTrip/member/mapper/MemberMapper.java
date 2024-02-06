@@ -1,10 +1,11 @@
 package com.ImageTrip.member.mapper;
-
-import com.ImageTrip.member.dto.CreateMemberDto;
+import com.ImageTrip.member.dto.MemberDto;
 import com.ImageTrip.member.entity.Member;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface MemberMapper {
-    Member createMemberDtoToMember(CreateMemberDto createMemberDto);
+    Member createMemberDtoToMember(MemberDto.CreateMemberDto createMemberDto);
+
+    MemberDto.GetAccountResponseDto memberToGetAccountResponseDto(Member member);
 }

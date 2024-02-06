@@ -56,9 +56,13 @@ dependencies {
 	implementation 'org.mapstruct:mapstruct:1.4.2.Final'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
 
+	//Gson
+	implementation 'com.google.code.gson:gson'
+
 	// rds 연결
 	implementation 'mysql:mysql-connector-java:8.0.33'
 	//runtimeOnly 'com.mysql:mysql-connector-j'
+
 }
 
 tasks.named('test') {
