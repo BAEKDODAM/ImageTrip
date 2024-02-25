@@ -7,19 +7,19 @@ import com.ImageTrip.member.mapper.MemberMapper;
 import com.ImageTrip.member.service.MemberService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-
+@Slf4j
 @Api(tags = "MemberController")
 @RestController
-@RequestMapping(value = "/user")
+@RequestMapping("/user")
 public class MemberController {
-
+//회원 탈퇴, 프로필 이미지 수정
     private final MemberService memberService;
     private final MemberMapper memberMapper;
 
@@ -31,54 +31,51 @@ public class MemberController {
     }
 
     @ApiOperation(value = "이메일 중복검사_회원가입_o")
-    @PostMapping("/checkEmail")
-    public ResponseEntity checkEmail(@RequestBody @Valid CheckEmailDto checkEmailDto){
-        //유효성검증
+    @PostMapping("/checkUseableEmail")
+    public ResponseEntity checkUseableEmail(@RequestBody @Valid MemberDto.CheckEmailDto checkEmailDto){
 
-        CheckResponseDto checkResponseDto = new CheckResponseDto();
-        checkResponseDto.setCheck(memberService.checkEmail(checkEmailDto.getEmail()));//findEmail(email);
+        memberService.verifyExistsName(checkEmailDto.getEmail());
 
-        return new ResponseEntity<>(checkResponseDto, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @ApiOperation(value = "이름 중복검사_회원가입(, 이름수정)_o")
     @PostMapping("/checkName")
-    public ResponseEntity checkName(@RequestBody @Valid CheckNameDto checkNameDto){
+    public ResponseEntity checUseablekName(@RequestBody @Valid MemberDto.CheckNameDto checkNameDto){
         // 유효성검증
+//        CheckResponseDto checkResponseDto = new CheckResponseDto();
+//        checkResponseDto.setCheck(memberService.checkName(checkNameDto.getName()));
 
-        CheckResponseDto checkResponseDto = new CheckResponseDto();
-        checkResponseDto.setCheck(memberService.checkName(checkNameDto.getName()));
+        memberService.verifyExistsName(checkNameDto.getName());
 
-        return new ResponseEntity<>(checkResponseDto, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     //pw는 따로 요청없이 입력받는대로 프론트에서 유효성검증, 통과시 회원가입 요청
 
     @ApiOperation(value = "회원가입_o")
     @PostMapping("/joinIn")
-    public ResponseEntity joinIn(@RequestBody @Valid CreateMemberDto createMemberDto){
-        //email, name, pw, 유효성검증 필요
-        Member member = memberMapper.createMemberDtoToMember(createMemberDto);  //new Member(createMemberDto.getEmail(), createMemberDto.getName(), createMemberDto.getPassword());
-
+    public ResponseEntity joinIn(@RequestBody @Valid MemberDto.CreateMemberDto createMemberDto){
+        Member member = memberMapper.createMemberDtoToMember(createMemberDto);
         memberService.createMember(member);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
-//
-//    @ApiOperation(value = "비밀번호 확인")
-//    @PostMapping("/checkPassword")
-//    public ResponseEntity checkPassword(@RequestHeader(value = "Authorization") String token,
-//                                        @RequestBody CheckPasswordDto checkPasswordDto){
-//
-//        CheckResponseDto checkResponseDto = new CheckResponseDto();
-//        checkResponseDto.setCheck(true); //checkPassword();
-//        return new ResponseEntity(checkResponseDto, HttpStatus.OK);
-//    }
+
+    @ApiOperation(value = "비밀번호 확인")
+    @PostMapping("/checkPassword")
+    public ResponseEntity checkPassword(@RequestHeader(value = "Authorization") String token,
+                                        @RequestBody MemberDto.CheckPasswordDto checkPasswordDto){
+
+        memberService.checkUserPassword(token, checkPasswordDto.getPassword());
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
 
     @ApiOperation(value = "회원탈퇴")
     @PostMapping("/deleteAccount")
     public ResponseEntity deleteAccount(@RequestHeader(value = "Authorization") String token,
-                                        @RequestBody CheckPasswordDto checkPasswordDto){
+                                        @RequestBody MemberDto.CheckPasswordDto checkPasswordDto){
 
         //비밀번호 같으면
         return new ResponseEntity(HttpStatus.NO_CONTENT);
@@ -88,20 +85,17 @@ public class MemberController {
     @GetMapping("/getAccount")
     public ResponseEntity getAccount(@RequestHeader(value = "Authorization") String token){
 
-        GetAccountResponseDto getAccountResponseDto = new GetAccountResponseDto();
-
-        getAccountResponseDto.setEmail("exampleEmail");
-        getAccountResponseDto.setName("exampleName_but_memberIdTest : " + memberService.getMemberIdFromToken(token));
+        Member findMember = memberService.findMemberByToken(token);
+        MemberDto.GetAccountResponseDto getAccountResponseDto = memberMapper.memberToGetAccountResponseDto(findMember);
         return new ResponseEntity(getAccountResponseDto, HttpStatus.OK);
     }
 
     @ApiOperation(value = "이름 수정_o")
     @PatchMapping("/updateName")
     public ResponseEntity updateName(@RequestHeader(value = "Authorization") String token,
-                                     @RequestBody UpdateNameDto updateNameDto){
-
-        memberService.updateName(token, updateNameDto.getName());
-
+                                     @RequestBody MemberDto.UpdateNameDto updateNameDto){
+        memberService.verifyExistsName(updateNameDto.getNewName());
+        memberService.updateName(token, updateNameDto.getNewName());
         //중복검사 후 사용가능이면
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -109,11 +103,11 @@ public class MemberController {
     @ApiOperation(value = "비밀번호 수정_o")
     @PatchMapping("/updatePassword")
     public ResponseEntity updatePassword(@RequestHeader(value = "Authorization") String token,
-                                         @RequestBody @Valid UpdatePasswordDto updatePasswordDto){
+                                         @RequestBody @Valid MemberDto.UpdatePasswordDto updatePasswordDto){
 
         memberService.checkUserPassword(token, updatePasswordDto.getCurrentPassword());
-
         memberService.updatePassword(token, updatePasswordDto.getCurrentPassword(), updatePasswordDto.getNewPassword());
+
         return new ResponseEntity(HttpStatus.OK);
     }
 
