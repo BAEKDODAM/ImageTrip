@@ -7,9 +7,7 @@ import com.ImageTrip.member.entity.Member;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @NoArgsConstructor
@@ -52,11 +50,11 @@ public class ScheduleDto {
         private boolean share;
         private boolean liked;
 
-        public static Response from(Schedule schedule, int likeCnt, boolean liked){
+        public static Response from(Schedule schedule, List<ScheduleList> scheduleLists, int likeCnt, boolean liked){
             return Response.builder()
                     .scheduleId(schedule.getScheduleId())
                     .title(schedule.getTitle())
-                    .scheduleLists(schedule.getScheduleLists())
+                    .scheduleLists(scheduleLists)
                     .startDate(schedule.getStartDate())
                     .endDate(schedule.getEndDate())
                     .likeCnt(likeCnt)
@@ -99,8 +97,6 @@ public class ScheduleDto {
         private String name;
         private boolean liked;
 
-        public ListResponse(Schedule schedule) {
-        }
         public static ListResponse from (Schedule schedule, int likeCnt, boolean liked){
             return ListResponse.builder()
                     .scheduleId(schedule.getScheduleId())

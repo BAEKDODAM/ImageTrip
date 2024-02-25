@@ -10,8 +10,6 @@ import com.ImageTrip.ScheduleList.service.ScheduleListService;
 import com.ImageTrip.exception.BusinessLogicException;
 import com.ImageTrip.exception.ExceptionCode;
 import com.ImageTrip.member.entity.Member;
-import com.ImageTrip.member.repository.MemberRepository;
-import com.ImageTrip.member.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -36,7 +34,6 @@ public class ScheduleService {
     }
 
     public ScheduleDto.Response createSchedule(Schedule postSchedule, List<ScheduleListDto.Post> scheduleLists, Member member) {
-        //Member member = memberService.getMemberByMemberId(memberId);
         postSchedule.setMember(member);
         Schedule saveSchedule = scheduleRepository.save(postSchedule);
         List<ScheduleList> SaveScheduleLists = scheduleListService.saveScheduleLists(scheduleLists, saveSchedule);
@@ -47,12 +44,8 @@ public class ScheduleService {
     }
 
     public ScheduleDto.Response updateSchedule(long memberId, long scheduleId, Schedule postSchedule, List<ScheduleListDto.Post> scheduleLists) {
-        //Member member = memberService.getMemberByMemberId(memberId)
-
         Schedule findSchedule = findVerifiedSchedule(scheduleId);
         validateWriter(memberId, findSchedule);
-
-        //findSchedule.g();//과 postSchedule.isShare() 같으면 / 다르면 postSchedule.isShare()
 
         Optional.ofNullable(postSchedule.getTitle())
                 .ifPresent(title -> findSchedule.setTitle(title));
@@ -62,19 +55,17 @@ public class ScheduleService {
                 .ifPresent(endDate -> findSchedule.setEndDate(endDate));
         Optional.ofNullable(postSchedule.getShare())
                 .ifPresent(share -> findSchedule.setShare(share));
-        //findSchedule.setShare(postSchedule.isShare());
         Schedule saveSchedule = scheduleRepository.save(findSchedule);
 
         Optional.ofNullable(scheduleLists)
                 .ifPresent(schedules -> scheduleListService.changeScheduleLists(scheduleId, schedules, findSchedule));
 
-        //List<ScheduleList> saveScheduleLists = scheduleListService.changeScheduleLists(scheduleId, scheduleLists, findSchedule);
-
-
         int likeCnt = likeService.scheduleLikeCnt(scheduleId);
         boolean liked = likeService.findLike(scheduleId, memberId);
 
-        return ScheduleDto.Response.from(saveSchedule, likeCnt, liked);
+        List<ScheduleList> returnScheduleList = scheduleListService.findSchduleListByScheduleId(scheduleId);
+
+        return ScheduleDto.Response.from(saveSchedule, returnScheduleList, likeCnt, liked);
     }
 
     public void deleteSchedule(long memberId, long scheduleId){
@@ -119,11 +110,13 @@ public class ScheduleService {
                 : scheduleRepository.findByShareTrueAndScheduleIdLessThanOrderByScheduleIdDesc(cursor, pageable);
     }
 
+    @Transactional
     public ScheduleDto.Response getScheduleDetail(long scheduleId, long memberId) {
         Schedule findSchedule = findVerifiedSchedule(scheduleId);
         int likeCnt = likeService.scheduleLikeCnt(scheduleId);
         boolean liked = likeService.findLike(scheduleId, memberId);
-        return ScheduleDto.Response.from(findSchedule, likeCnt, liked);
+        List<ScheduleList> scheduleLists = scheduleListService.findSchduleListByScheduleId(scheduleId);
+        return ScheduleDto.Response.from(findSchedule, scheduleLists, likeCnt, liked);
     }
 
     public List<ScheduleDto.ListResponse> findSearchSchedule(Long cursor, Pageable pageable, String search, long memberId) {

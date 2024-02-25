@@ -23,13 +23,13 @@ public class ScheduleListService {
 
     public List<ScheduleList> saveScheduleLists(List<ScheduleListDto.Post> schedules, Schedule schedule) {
         return schedules.stream().map(scheduleList -> {
-            ScheduleList scheduleList1 = new ScheduleList();
-            scheduleList1.setContent(scheduleList.getContent());
+            ScheduleList scheduleList1 = new ScheduleList(scheduleList.getContent(), scheduleList.getLat(), scheduleList.getLon(),schedules.indexOf(scheduleList), schedule);
+            /*scheduleList1.setContent(scheduleList.getContent());
             scheduleList1.setLat(scheduleList.getLat());
             scheduleList1.setLon(scheduleList.getLon());
             int priority = schedules.indexOf(scheduleList);
             scheduleList1.setPriority(priority);
-            scheduleList1.setSchedule(schedule);
+            scheduleList1.setSchedule(schedule);*/
             return repository.save(scheduleList1);
         }).collect(Collectors.toList());
     }
@@ -44,5 +44,7 @@ public class ScheduleListService {
         findScheduleLists.stream()
                 .forEach(scheduleList -> repository.delete(scheduleList));
     }
-
+    public List<ScheduleList> findSchduleListByScheduleId(long scheduleId){
+        return repository.findAllByScheduleScheduleId(scheduleId);
+    }
 }
