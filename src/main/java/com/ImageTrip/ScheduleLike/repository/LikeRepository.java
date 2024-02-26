@@ -17,7 +17,7 @@ public interface LikeRepository extends JpaRepository<ScheduleLike, Long> {
 
     void deleteByScheduleScheduleIdAndMemberMemberId(long scheduleId, long memberId);
 
-    List<ScheduleLike> findByMemberMemberIdOrderByScheduleLikeIdDesc(Pageable pageable);
+    List<ScheduleLike> findByMemberMemberIdOrderByScheduleLikeIdDesc(long memberId, Pageable pageable);
     List<ScheduleLike> findByMemberMemberIdAndScheduleLikeIdLessThanOrderByScheduleLikeIdDesc(long memberId, long scheduleLikeId, Pageable pageable);
 
 }

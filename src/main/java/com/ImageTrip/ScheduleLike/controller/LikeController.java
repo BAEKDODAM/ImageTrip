@@ -1,8 +1,6 @@
 package com.ImageTrip.ScheduleLike.controller;
 
 import com.ImageTrip.Schedule.dto.ScheduleDto;
-import com.ImageTrip.Schedule.entity.Schedule;
-import com.ImageTrip.Schedule.service.ScheduleService;
 import com.ImageTrip.ScheduleLike.service.LikeService;
 import com.ImageTrip.member.entity.Member;
 import com.ImageTrip.member.service.MemberService;
@@ -19,14 +17,11 @@ import java.util.List;
 @RequestMapping("/like")
 public class LikeController {
     private final MemberService memberService;
-    private final ScheduleService scheduleService;
     private final LikeService likeService;
     private static final int PAGE_DEFAULT_SIZE = 10;
 
-
-    public LikeController(MemberService memberService, ScheduleService scheduleService, LikeService likeService) {
+    public LikeController(MemberService memberService, LikeService likeService) {
         this.memberService = memberService;
-        this.scheduleService = scheduleService;
         this.likeService = likeService;
     }
 
@@ -35,8 +30,7 @@ public class LikeController {
     public ResponseEntity postLike(@PathVariable("scheduleId") int scheduleId,
                                    @RequestHeader(value = "Authorization") String token) {
         Member member = memberService.findMemberByToken(token);
-        Schedule schedule = scheduleService.findVerifiedSchedule(scheduleId);
-        likeService.createLike(schedule, member);
+        likeService.createLike(scheduleId, member);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
