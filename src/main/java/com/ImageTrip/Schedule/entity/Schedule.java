@@ -9,7 +9,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -49,4 +48,12 @@ public class Schedule {
     @ManyToOne
     @JoinColumn(name = "memberId")
     private Member member;
+
+    public Schedule(String title, Boolean share, LocalDate startDate, LocalDate endDate, Member member) {
+        this.title = title;
+        this.share = share;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.member = member;
+    }
 }

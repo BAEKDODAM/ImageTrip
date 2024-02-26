@@ -3,7 +3,6 @@ package com.ImageTrip.Schedule.dto;
 import com.ImageTrip.Schedule.entity.Schedule;
 import com.ImageTrip.ScheduleList.dto.ScheduleListDto;
 import com.ImageTrip.ScheduleList.entity.ScheduleList;
-import com.ImageTrip.member.entity.Member;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -42,13 +41,15 @@ public class ScheduleDto {
 
         private LocalDate endDate;
 
-        private int likeCnt;
+        @Builder.Default
+        private int likeCnt = 0;
 
         private String name;
 
         private List<ScheduleList> scheduleLists;
         private boolean share;
-        private boolean liked;
+        @Builder.Default
+        private boolean liked = false;
 
         public static Response from(Schedule schedule, List<ScheduleList> scheduleLists, int likeCnt, boolean liked){
             return Response.builder()
@@ -64,15 +65,14 @@ public class ScheduleDto {
                     .build();
         }
 
-        public static Response from(Schedule schedule, Member member, List<ScheduleList> scheduleLists, int likeCnt) {
+        public static Response from(Schedule schedule, List<ScheduleList> scheduleLists) {
             return Response.builder()
                     .scheduleId(schedule.getScheduleId())
                     .title(schedule.getTitle())
-                    .scheduleLists(schedule.getScheduleLists())
+                    .scheduleLists(scheduleLists)
                     .startDate(schedule.getStartDate())
                     .endDate(schedule.getEndDate())
-                    .likeCnt(likeCnt)
-                    .name(member.getName())
+                    .name(schedule.getMember().getName())
                     .share(schedule.getShare())
                     .build();
         }
@@ -106,18 +106,6 @@ public class ScheduleDto {
                     .likeCnt(likeCnt)
                     .liked(liked)
                     .name(schedule.getMember().getName())
-                    .build();
-        }
-
-        public static ListResponse from (Schedule schedule, Member member, int likeCnt, boolean liked){
-            return ListResponse.builder()
-                    .scheduleId(schedule.getScheduleId())
-                    .title(schedule.getTitle())
-                    .startDate(schedule.getStartDate())
-                    .endDate(schedule.getEndDate())
-                    .likeCnt(likeCnt)
-                    .liked(liked)
-                    .name(member.getName())
                     .build();
         }
     }
