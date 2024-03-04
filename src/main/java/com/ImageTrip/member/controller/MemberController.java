@@ -31,7 +31,7 @@ public class MemberController {
     }
 
     @ApiOperation(value = "이메일 중복검사_회원가입_o")
-    @PostMapping("/checkUseableEmail")
+    @PostMapping("/checkUsableEmail")
     public ResponseEntity checkUseableEmail(@RequestBody @Valid MemberDto.CheckEmailDto checkEmailDto){
 
         memberService.verifyExistsName(checkEmailDto.getEmail());
@@ -40,7 +40,7 @@ public class MemberController {
     }
 
     @ApiOperation(value = "이름 중복검사_회원가입(, 이름수정)_o")
-    @PostMapping("/checkName")
+    @PostMapping("/checkUsableName")
     public ResponseEntity checUseablekName(@RequestBody @Valid MemberDto.CheckNameDto checkNameDto){
         // 유효성검증
 //        CheckResponseDto checkResponseDto = new CheckResponseDto();
