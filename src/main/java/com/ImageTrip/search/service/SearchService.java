@@ -2,7 +2,6 @@ package com.ImageTrip.search.service;
 
 import com.ImageTrip.Schedule.dto.ScheduleDto;
 import com.ImageTrip.Schedule.service.ScheduleService;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 

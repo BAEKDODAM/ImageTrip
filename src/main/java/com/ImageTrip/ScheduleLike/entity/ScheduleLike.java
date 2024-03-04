@@ -25,4 +25,9 @@ public class ScheduleLike {
     @ManyToOne
     @JoinColumn(name = "memberId")
     private Member member;
+
+    public ScheduleLike(Schedule schedule, Member member) {
+        this.schedule = schedule;
+        this.member = member;
+    }
 }

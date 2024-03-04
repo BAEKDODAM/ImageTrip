@@ -10,8 +10,6 @@ import com.ImageTrip.ScheduleList.service.ScheduleListService;
 import com.ImageTrip.exception.BusinessLogicException;
 import com.ImageTrip.exception.ExceptionCode;
 import com.ImageTrip.member.entity.Member;
-import com.ImageTrip.member.repository.MemberRepository;
-import com.ImageTrip.member.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -36,23 +34,16 @@ public class ScheduleService {
     }
 
     public ScheduleDto.Response createSchedule(Schedule postSchedule, List<ScheduleListDto.Post> scheduleLists, Member member) {
-        //Member member = memberService.getMemberByMemberId(memberId);
         postSchedule.setMember(member);
         Schedule saveSchedule = scheduleRepository.save(postSchedule);
         List<ScheduleList> SaveScheduleLists = scheduleListService.saveScheduleLists(scheduleLists, saveSchedule);
-        Schedule findSchedule = findVerifiedSchedule(saveSchedule.getScheduleId());
-        ScheduleDto.Response response = ScheduleDto.Response.from(findSchedule, member, SaveScheduleLists, 0);
-
+        ScheduleDto.Response response = ScheduleDto.Response.from(saveSchedule, SaveScheduleLists);
         return response;
     }
 
     public ScheduleDto.Response updateSchedule(long memberId, long scheduleId, Schedule postSchedule, List<ScheduleListDto.Post> scheduleLists) {
-        //Member member = memberService.getMemberByMemberId(memberId)
-
         Schedule findSchedule = findVerifiedSchedule(scheduleId);
         validateWriter(memberId, findSchedule);
-
-        //findSchedule.g();//과 postSchedule.isShare() 같으면 / 다르면 postSchedule.isShare()
 
         Optional.ofNullable(postSchedule.getTitle())
                 .ifPresent(title -> findSchedule.setTitle(title));
@@ -62,19 +53,16 @@ public class ScheduleService {
                 .ifPresent(endDate -> findSchedule.setEndDate(endDate));
         Optional.ofNullable(postSchedule.getShare())
                 .ifPresent(share -> findSchedule.setShare(share));
-        //findSchedule.setShare(postSchedule.isShare());
         Schedule saveSchedule = scheduleRepository.save(findSchedule);
 
         Optional.ofNullable(scheduleLists)
                 .ifPresent(schedules -> scheduleListService.changeScheduleLists(scheduleId, schedules, findSchedule));
 
-        //List<ScheduleList> saveScheduleLists = scheduleListService.changeScheduleLists(scheduleId, scheduleLists, findSchedule);
-
-
         int likeCnt = likeService.scheduleLikeCnt(scheduleId);
-        boolean liked = likeService.findLike(scheduleId, memberId);
+        boolean liked = likeService.hasLiked(scheduleId, memberId);
+        List<ScheduleList> returnScheduleList = scheduleListService.findSchduleListByScheduleId(scheduleId);
 
-        return ScheduleDto.Response.from(saveSchedule, likeCnt, liked);
+        return ScheduleDto.Response.from(saveSchedule, returnScheduleList, likeCnt, liked);
     }
 
     public void deleteSchedule(long memberId, long scheduleId){
@@ -85,32 +73,26 @@ public class ScheduleService {
         scheduleRepository.deleteById(scheduleId);
     }
 
-    public List<ScheduleDto.ListResponse> findMyScheduleByPage(long cursor, Member member, Pageable pageable){
-        //Member member = memberService.getMemberByMemberId(memberId)
-        List<Schedule> schedules = getMySchedules(cursor, pageable, member.getMemberId())
+    public List<ScheduleDto.ListResponse> findMyScheduleByPage(long cursor, long memberId, Pageable pageable){
+        List<Schedule> schedules = getMySchedules(cursor, pageable, memberId)
                 .stream().collect(Collectors.toList());
 
-        return schedules.stream().map(schedule -> {
-            int likeCnt = likeService.scheduleLikeCnt(schedule.getScheduleId());
-            boolean liked = likeService.findLike(schedule.getScheduleId(), member.getMemberId());
-            return ScheduleDto.ListResponse.from(schedule, member, likeCnt, liked);
-        }).collect(Collectors.toList());
+        return schedules.stream()
+                .map(schedule -> makeListResponse(schedule, memberId))
+                .collect(Collectors.toList());
     }
-    // 페이징 처리를 위한 메서드
-    public List<Schedule> getMySchedules(Long cursor, Pageable page, long memberId){
+    public List<Schedule> getMySchedules(Long cursor, Pageable pageable, long memberId){
         return cursor.equals(0L)
-                ? scheduleRepository.findByMemberMemberIdOrderByScheduleIdDesc(memberId, page)
-                : scheduleRepository.findByMemberMemberIdAndScheduleIdLessThanOrderByScheduleIdDesc(memberId,cursor, page);
+                ? scheduleRepository.findByMemberMemberIdOrderByScheduleIdDesc(memberId, pageable)
+                : scheduleRepository.findByMemberMemberIdAndScheduleIdLessThanOrderByScheduleIdDesc(memberId, cursor, pageable);
     }
 
     public List<ScheduleDto.ListResponse> findSharedSchedulesByPage(long cursor, Pageable pageable, long memberId){
         List<Schedule> schedules = getSharedSchedules(cursor, pageable)
                 .stream().collect(Collectors.toList());
-        return schedules.stream().map(schedule -> {
-            int likeCnt = likeService.scheduleLikeCnt(schedule.getScheduleId());
-            boolean liked = likeService.findLike(schedule.getScheduleId(), memberId);
-            return ScheduleDto.ListResponse.from(schedule, likeCnt, liked);
-        }).collect(Collectors.toList());
+        return schedules.stream()
+                .map(schedule -> makeListResponse(schedule, memberId))
+                .collect(Collectors.toList());
     }
 
     public List<Schedule> getSharedSchedules(Long cursor, Pageable pageable){
@@ -119,21 +101,21 @@ public class ScheduleService {
                 : scheduleRepository.findByShareTrueAndScheduleIdLessThanOrderByScheduleIdDesc(cursor, pageable);
     }
 
+    @Transactional
     public ScheduleDto.Response getScheduleDetail(long scheduleId, long memberId) {
         Schedule findSchedule = findVerifiedSchedule(scheduleId);
         int likeCnt = likeService.scheduleLikeCnt(scheduleId);
-        boolean liked = likeService.findLike(scheduleId, memberId);
-        return ScheduleDto.Response.from(findSchedule, likeCnt, liked);
+        boolean liked = likeService.hasLiked(scheduleId, memberId);
+        List<ScheduleList> scheduleLists = scheduleListService.findSchduleListByScheduleId(scheduleId);
+        return ScheduleDto.Response.from(findSchedule, scheduleLists, likeCnt, liked);
     }
 
     public List<ScheduleDto.ListResponse> findSearchSchedule(Long cursor, Pageable pageable, String search, long memberId) {
         List<Schedule> schedules = getSearchSchedule(cursor, pageable, search)
                 .stream().collect(Collectors.toList());
-        return schedules.stream().map(schedule -> {
-            int likeCnt = likeService.scheduleLikeCnt(schedule.getScheduleId());
-            boolean liked = likeService.findLike(schedule.getScheduleId(), memberId);
-            return ScheduleDto.ListResponse.from(schedule, likeCnt, liked);
-        }).collect(Collectors.toList());
+        return schedules.stream()
+                .map(schedule -> makeListResponse(schedule, memberId))
+                .collect(Collectors.toList());
 
     }
     public List<Schedule> getSearchSchedule(Long cursor, Pageable pageable, String search) {
@@ -147,5 +129,11 @@ public class ScheduleService {
     }
     public Schedule findVerifiedSchedule(long scheduleId) {
         return scheduleRepository.findByScheduleId(scheduleId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.SCHEDULE_NOT_FOUND));
+    }
+
+    public ScheduleDto.ListResponse makeListResponse(Schedule schedule, long memberId){
+        int likeCnt = likeService.scheduleLikeCnt(schedule.getScheduleId());
+        boolean liked = likeService.hasLiked(schedule.getScheduleId(), memberId);
+        return ScheduleDto.ListResponse.from(schedule, likeCnt, liked);
     }
 }
