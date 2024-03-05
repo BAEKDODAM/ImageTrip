@@ -53,7 +53,6 @@ public class SecurityConfiguration {
                 .and()
                 .authorizeHttpRequests(authorize -> authorize
                         //접근권한 수정필요
-                        .antMatchers(HttpMethod.GET, "/user/**").hasRole("USER")
                         .anyRequest().permitAll()
                 );
         return http.build();
