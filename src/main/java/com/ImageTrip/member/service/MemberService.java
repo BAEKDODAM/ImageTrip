@@ -99,7 +99,7 @@ public class MemberService {
     public void checkUserPassword(String token, String password) {
         Member member = findMemberByToken(token);
 
-        if (!passwordEncoder.encode(password).equals(member.getPassword()));
+        if (!passwordEncoder.encode(password).equals(member.getPassword()))
             new BusinessLogicException(ExceptionCode.UNMATCHED_PASSWORD);
 
     }
