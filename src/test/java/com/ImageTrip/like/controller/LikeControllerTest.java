@@ -1,4 +1,4 @@
-package com.ImageTrip.like;
+package com.ImageTrip.like.controller;
 
 import com.ImageTrip.Schedule.mapper.ScheduleMapper;
 import com.ImageTrip.ScheduleLike.service.LikeService;
