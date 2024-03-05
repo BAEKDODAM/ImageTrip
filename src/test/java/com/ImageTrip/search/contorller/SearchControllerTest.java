@@ -1,4 +1,4 @@
-package com.ImageTrip.search;
+package com.ImageTrip.search.contorller;
 
 import com.ImageTrip.member.service.MemberService;
 import com.ImageTrip.search.service.SearchService;
