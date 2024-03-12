@@ -100,7 +100,7 @@ public class MemberService {
         Member member = findMemberByToken(token);
 
         if (!passwordEncoder.encode(password).equals(member.getPassword()))
-            new BusinessLogicException(ExceptionCode.UNMATCHED_PASSWORD);
+            throw new BusinessLogicException(ExceptionCode.UNMATCHED_PASSWORD);
 
     }
 
@@ -108,13 +108,14 @@ public class MemberService {
 
     public void verifyExistsEmail(String email) {
         Optional<Member> optionalMember = memberRepository.findByEmail(email);
-        if(optionalMember.isPresent()) new BusinessLogicException(ExceptionCode.MEMBER_EXISTS);
+        System.out.println(optionalMember);
+        if(optionalMember.isPresent()) throw new BusinessLogicException(ExceptionCode.MEMBER_EXISTS);
 
     }
 
     public void verifyExistsName(String name) {
-        Optional<Member> optionalMember = memberRepository.findByEmail(name);
-        if(optionalMember.isPresent()) new BusinessLogicException(ExceptionCode.MEMBER_EXISTS);
+        Optional<Member> optionalMember = memberRepository.findByName(name);
+        if(optionalMember.isPresent()) throw new BusinessLogicException(ExceptionCode.MEMBER_EXISTS);
 
     }
 
