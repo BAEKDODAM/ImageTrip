@@ -30,7 +30,7 @@ public class MemberController {
 
     }
 
-    @ApiOperation(value = "이메일 중복검사_회원가입_o")
+    @ApiOperation(value = "이메일 중복검사")
     @PostMapping("/checkUsableEmail")
     public ResponseEntity checkUseableEmail(@RequestBody @Valid MemberDto.CheckEmailDto checkEmailDto){
 
@@ -39,7 +39,7 @@ public class MemberController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @ApiOperation(value = "이름 중복검사_회원가입(, 이름수정)_o")
+    @ApiOperation(value = "이름 중복검사")
     @PostMapping("/checkUsableName")
     public ResponseEntity checUseablekName(@RequestBody @Valid MemberDto.CheckNameDto checkNameDto){
         // 유효성검증
@@ -53,7 +53,7 @@ public class MemberController {
 
     //pw는 따로 요청없이 입력받는대로 프론트에서 유효성검증, 통과시 회원가입 요청
 
-    @ApiOperation(value = "회원가입_o")
+    @ApiOperation(value = "회원가입")
     @PostMapping("/joinIn")
     public ResponseEntity joinIn(@RequestBody @Valid MemberDto.CreateMemberDto createMemberDto){
         Member member = memberMapper.createMemberDtoToMember(createMemberDto);
@@ -90,7 +90,7 @@ public class MemberController {
         return new ResponseEntity(getAccountResponseDto, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "이름 수정_o")
+    @ApiOperation(value = "이름 수정")
     @PatchMapping("/updateName")
     public ResponseEntity updateName(@RequestHeader(value = "Authorization") String token,
                                      @RequestBody MemberDto.UpdateNameDto updateNameDto){
@@ -100,7 +100,7 @@ public class MemberController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @ApiOperation(value = "비밀번호 수정_o")
+    @ApiOperation(value = "비밀번호 수정")
     @PatchMapping("/updatePassword")
     public ResponseEntity updatePassword(@RequestHeader(value = "Authorization") String token,
                                          @RequestBody @Valid MemberDto.UpdatePasswordDto updatePasswordDto){
