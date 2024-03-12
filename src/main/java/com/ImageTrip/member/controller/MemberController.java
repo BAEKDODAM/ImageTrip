@@ -34,7 +34,7 @@ public class MemberController {
     @PostMapping("/checkUsableEmail")
     public ResponseEntity checkUseableEmail(@RequestBody @Valid MemberDto.CheckEmailDto checkEmailDto){
 
-        memberService.verifyExistsName(checkEmailDto.getEmail());
+        memberService.verifyExistsEmail(checkEmailDto.getEmail());
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
