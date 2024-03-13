@@ -77,6 +77,8 @@ public class MemberController {
     public ResponseEntity deleteAccount(@RequestHeader(value = "Authorization") String token,
                                         @RequestBody MemberDto.CheckPasswordDto checkPasswordDto){
 
+        memberService.deleteMember(token, checkPasswordDto.getPassword());
+
         //비밀번호 같으면
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
