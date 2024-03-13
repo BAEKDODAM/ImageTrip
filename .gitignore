@@ -1,5 +1,5 @@
 HELP.md
-.gradle
+
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
@@ -37,7 +37,10 @@ out/
 .vscode/
 
 
-
+### CI/CD ###
+appspec.yml
+.github/workflows/gradle.yml
+scripts/deploy.sh
 
 ### env ###
 .env
