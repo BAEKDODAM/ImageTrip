@@ -42,4 +42,5 @@ appspec.yml
 scripts/deploy.sh
 
 
-
+### env ###
+.env
