@@ -41,6 +41,5 @@ appspec.yml
 .github/workflows/gradle.yml
 scripts/deploy.sh
 
-### env ###
-.env
+
 
