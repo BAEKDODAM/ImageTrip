@@ -36,10 +36,7 @@ out/
 ### VS Code ###
 .vscode/
 
-### CI/CD ###
-appspec.yml
-.github/workflows/gradle.yml
-scripts/deploy.sh
+
 
 
 ### env ###
