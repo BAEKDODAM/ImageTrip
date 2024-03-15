@@ -17,16 +17,19 @@ public class JsonDataService {
     // 출력 데이터자체가 JSON 데이터 구조
     public String getJsonData(HttpURLConnection con) {
         StringBuilder response = new StringBuilder();
+        System.out.println(response);
         try (BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
             String line;
             while ((line = br.readLine()) != null) {
                 response.append(line);
             }
         } catch (IOException e) {
+            System.out.println(e);
             // IOException 처리 로직
         } finally {
             con.disconnect();
         }
+        System.out.println(response.toString());
         return response.toString();
     }
 
@@ -47,6 +50,7 @@ public class JsonDataService {
                 }
             }
         } catch (JSONException e) {
+            System.out.println(e);
             // JSON 파싱 중 오류 처리
         }
         return address;

@@ -98,9 +98,10 @@ public class MemberService {
 
     public void checkUserPassword(String token, String password) {
         Member member = findMemberByToken(token);
-
-        if (!passwordEncoder.encode(password).equals(member.getPassword()))
+        
+        if (!passwordEncoder.matches(password, member.getPassword()))
             throw new BusinessLogicException(ExceptionCode.UNMATCHED_PASSWORD);
+
 
     }
 
@@ -119,5 +120,17 @@ public class MemberService {
 
     }
 
+
+    public void deleteMember(String token, String pw) {
+        checkUserPassword(token, pw);
+
+        long memberId =  getMemberIdFromToken(token);
+
+        Optional<Member> optionalMember = memberRepository.findById(memberId);
+        Member findMember = optionalMember.orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+
+        memberRepository.delete(findMember);
+
+    }
 
 }

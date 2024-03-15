@@ -2,6 +2,8 @@ package com.ImageTrip.image.service;
 
 import org.springframework.stereotype.Service;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -9,7 +11,8 @@ import java.net.URL;
 public class GeoCodingService {
     // KAKAO Maps Geocoding API 이용해서 위치 데이터를 주소로 변환
     public String convertAddrKakao(double latitude, double longitude) throws Exception {
-        String apiKey = "YOUR_KAKAO_API_KEY";
+        Dotenv dotenv = Dotenv.load();
+        String apiKey = dotenv.get("KAKAO_API_KEY"); //YOUR_KAKAO_API_KEY
         String apiURL = "https://dapi.kakao.com/v2/local/geo/coord2address.json?x="
                 + longitude + "&y=" + latitude + "&input_coord=WGS84";
         String addr = "";
