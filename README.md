@@ -52,7 +52,7 @@ Tour Mate는 여행 일정과 사진을 생성, 관리, 기록, 공유하기 위
 </br>
 
 ### API 명세서
-[API 명세서](http://ec2-3-37-87-198.ap-northeast-2.compute.amazonaws.com:8080/swagger-ui/#/)
+[API 명세서](http://tm.greennare.store/swagger-ui/#/)
 
 </br>
 
