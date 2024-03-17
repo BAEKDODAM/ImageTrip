@@ -3,6 +3,8 @@ package com.ImageTrip.Schedule.dto;
 import com.ImageTrip.Schedule.entity.Schedule;
 import com.ImageTrip.ScheduleList.dto.ScheduleListDto;
 import com.ImageTrip.ScheduleList.entity.ScheduleList;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -13,6 +15,8 @@ import java.util.List;
 public class ScheduleDto {
     @Getter
     @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class Post {
         private String title;
 
@@ -25,6 +29,19 @@ public class ScheduleDto {
         private LocalDate endDate;
 
         private Boolean share;
+
+        @JsonCreator
+        public Post(@JsonProperty("title") String title,
+                    @JsonProperty("scheduleList") List<ScheduleListDto.Post> scheduleList,
+                    @JsonProperty("startDate") LocalDate startDate,
+                    @JsonProperty("endDate") LocalDate endDate,
+                    @JsonProperty("share") boolean share){
+            this.title = title;
+            this.scheduleList = scheduleList;
+            this.startDate = startDate;
+            this.endDate = endDate;
+            this.share = share;
+        }
     }
 
     @Setter
