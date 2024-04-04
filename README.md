@@ -4,7 +4,7 @@ Tour Mate는 여행 일정과 사진을 생성, 관리, 기록, 공유하기 위
 
 - **Project**: Tour Mate
 
-- **Development Duration**: `2023.12.10~2023.1.20`
+- **Development Duration**: `2023.12.10~2023.3.15`
 
 </br>
 
